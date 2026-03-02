@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import supabase from "./utils/supabase.js";
+import supabase from "../utils/supabase.js";
 
 const CardLarge = (props) => {
 

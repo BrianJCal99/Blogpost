@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useContext } from "react";
-import Card from "../Card";
+import { useEffect, useState } from "react";
+import { useSelector } from 'react-redux'
+import Card from "../components/Card";
 import supabase from "../utils/supabase";
-import { SessionContext } from "../context/userSession.context";
 import { Link } from 'react-router-dom';
 
 function CardComponent({ id, title, abstract, user, created_at, created_by, image_url, likes, liked_by }) {
@@ -21,7 +21,7 @@ function CardComponent({ id, title, abstract, user, created_at, created_by, imag
 }
 
 const UserPostsPage = () => {
-  const session = useContext(SessionContext);
+  const { user } = useSelector((state) => state.user) // Redux state
   const [articleList, setArticleList] = useState([]); // User's posts
   const [likedArticleList, setLikedArticleList] = useState([]); // Liked posts
   const [followedArticleList, setFollowedArticleList] = useState([]); // Posts from followed users
@@ -53,7 +53,7 @@ const UserPostsPage = () => {
               email
             )
           `)
-          .eq('created_by', session?.user.id);
+          .eq('created_by', user?.id);
 
         if (error) throw error;
         setArticleList(data);
@@ -90,7 +90,7 @@ const UserPostsPage = () => {
               )
             )
           `)
-          .eq('user_id', session?.user.id); // User ID for liked posts
+          .eq('user_id', user?.id); // User ID for liked posts
 
         if (error) throw error;
         setLikedArticleList(data.map(item => item.post)); // Extract posts from the data
@@ -110,7 +110,7 @@ const UserPostsPage = () => {
         const { data: followData, error: followError } = await supabase
           .from('follow')
           .select('followee_id')  // Get followed user IDs
-          .eq('follower_id', session?.user.id);
+          .eq('follower_id', user?.id);
 
         if (followError) throw followError;
 
@@ -151,7 +151,7 @@ const UserPostsPage = () => {
     fetchUserPosts();
     fetchLikedPosts();
     fetchFollowedPosts();
-  }, [session]);
+  }, [user]);
 
   if (loading) {
     return <div className="container mt-5 text-center">Loading user posts...</div>;

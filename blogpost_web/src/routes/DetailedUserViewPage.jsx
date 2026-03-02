@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
-import Card from "../Card";
+import { useState, useEffect } from "react";
+import Card from "../components/Card";
 import { useParams } from "react-router-dom"; // For getting route parameters
 import supabase from "../utils/supabase";
-import { SessionContext } from "../context/userSession.context";
-import FollowSection from "../FollowSection";
+import FollowSection from "../components/FollowSection";
+import { useSelector } from "react-redux";
 
 function CardComponent({ id, title, abstract, user, created_at, created_by, image_url }) {
   const date = new Date(created_at).toISOString().split("T")[0];
@@ -22,12 +22,12 @@ function CardComponent({ id, title, abstract, user, created_at, created_by, imag
 }
 
 const DetailedUserViewPage = () => {
-  const session = useContext(SessionContext);
+  const { user } = useSelector((state) => state.user) // Redux state
   const { id: targetUserID } = useParams();
   const [targetUser, setTargetUser] = useState(null); // User data state
   const [postsList, setPostsList] = useState([]);
   const [loading, setLoading] = useState(true); // Loading
-  const currentUserID = session?.user?.id;
+  const currentUserID = user?.id;
 
   useEffect(() => {
     const fetchUserData = async () => {

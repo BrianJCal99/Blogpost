@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useContext } from "react";
-import supabase from "./utils/supabase";
-import { SessionContext } from "./context/userSession.context";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import supabase from "../utils/supabase";
+import toast from "react-hot-toast";
 
 const LikeSection = ({ postId }) => {
-    const session = useContext(SessionContext);
+    const { user } = useSelector((state) => state.user);
     const [likesCount, setLikesCount] = useState(0);
     const [userLiked, setUserLiked] = useState(false);
     const [showLikedBy, setShowLikedBy] = useState(false);
     const [likedBy, setLikedBy] = useState([]);
-    const userId = session?.user?.id;
 
     useEffect(() => {
         const fetchLikesData = async () => {
@@ -25,12 +25,12 @@ const LikeSection = ({ postId }) => {
                 setLikesCount(likeData.length);
 
                 // Check if the current user liked the post
-                if (userId) {
+                if (user?.id) {
                     const { data: userLikeData, error: userLikeError } = await supabase
                         .from("like")
                         .select("id")
                         .eq("post_id", postId)
-                        .eq("user_id", userId)
+                        .eq("user_id", user?.id)
                         .maybeSingle();
 
                     if (userLikeError && userLikeError.code !== "PGRST116") {
@@ -45,11 +45,12 @@ const LikeSection = ({ postId }) => {
         };
 
         fetchLikesData();
-    }, [postId, userId]);
+    }, [postId, user?.id]);
 
     const handleLike = async () => {
-        if (!userId) {
-            alert("You must be logged in to like a post.");
+        if (!user?.id) {
+            toast.error("You must be logged in to like a post.");
+            // alert("You must be logged in to like a post.");
             return;
         }
 
@@ -60,20 +61,26 @@ const LikeSection = ({ postId }) => {
                     .from("like")
                     .delete()
                     .eq("post_id", postId)
-                    .eq("user_id", userId);
+                    .eq("user_id", user?.id);
 
                 if (error) throw error;
 
+                toast("You unliked this post", {
+                    icon: "👎",
+                })
                 setLikesCount((prev) => prev - 1);
                 setUserLiked(false);
             } else {
                 // Add like
                 const { error } = await supabase
                     .from("like")
-                    .insert({ post_id: postId, user_id: userId });
+                    .insert({ post_id: postId, user_id: user?.id });
 
                 if (error) throw error;
 
+                toast("You liked this post", {
+                    icon: "👍",
+                })
                 setLikesCount((prev) => prev + 1);
                 setUserLiked(true);
             }

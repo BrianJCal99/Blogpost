@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
-import supabase from "./utils/supabase";
+import supabase from "../utils/supabase";
+import toast from "react-hot-toast";
 
 const FollowSection = ({ targetUserID, currentUserID }) => {
   const [following, setFollowing] = useState(false);
@@ -11,15 +12,19 @@ const FollowSection = ({ targetUserID, currentUserID }) => {
     const checkFollowStatus = async () => {
       try {
         // Check if the current user is following the target user
-        const { data: relationshipData, error: relationshipError } = await supabase
-          .from("follow")
-          .select("id")
-          .eq("follower_id", currentUserID)
-          .eq("followee_id", targetUserID)
-          .maybeSingle();
+        const { data: relationshipData, error: relationshipError } =
+          await supabase
+            .from("follow")
+            .select("id")
+            .eq("follower_id", currentUserID)
+            .eq("followee_id", targetUserID)
+            .maybeSingle();
 
         if (relationshipError) {
-          console.error('Supabase error fetching follow data:', relationshipError);
+          console.error(
+            "Supabase error fetching follow data:",
+            relationshipError,
+          );
           throw relationshipError;
         }
 
@@ -38,7 +43,10 @@ const FollowSection = ({ targetUserID, currentUserID }) => {
           .eq("followee_id", targetUserID);
 
         if (followersError) {
-          console.error('Supabase error fetching followers count:', followersError);
+          console.error(
+            "Supabase error fetching followers count:",
+            followersError,
+          );
           throw followersError;
         }
 
@@ -51,7 +59,10 @@ const FollowSection = ({ targetUserID, currentUserID }) => {
           .eq("follower_id", targetUserID);
 
         if (followingError) {
-          console.error('Supabase error fetching following count:', followingError);
+          console.error(
+            "Supabase error fetching following count:",
+            followingError,
+          );
           throw followingError;
         }
 
@@ -66,6 +77,12 @@ const FollowSection = ({ targetUserID, currentUserID }) => {
   }, [targetUserID, currentUserID]);
 
   const handleFollowToggle = async () => {
+    if (!currentUserID) {
+      toast.error("You must be logged in to follow this person.");
+      // alert("You must be logged in to follow this person.");
+      return;
+    }
+
     try {
       if (following) {
         // Unfollow user by deleting the relationship
@@ -77,6 +94,7 @@ const FollowSection = ({ targetUserID, currentUserID }) => {
 
         if (error) throw error;
         setFollowing(false);
+        toast.error("You started unfollowing them.");
         setFollowersCount(followersCount - 1); // Update follower count
       } else {
         // Follow user by inserting a new relationship
@@ -86,6 +104,7 @@ const FollowSection = ({ targetUserID, currentUserID }) => {
 
         if (error) throw error;
         setFollowing(true);
+        toast.success("You started following them.");
         setFollowersCount(followersCount + 1); // Update follower count
       }
     } catch (error) {
@@ -96,16 +115,25 @@ const FollowSection = ({ targetUserID, currentUserID }) => {
   return (
     <div className="card-body bg-white">
       <div className="card-text m-3">
-        <Link to={`/user/${targetUserID}/followers`} className="btn btn-sm mr-3">
+        <Link
+          to={`/user/${targetUserID}/followers`}
+          className="btn btn-sm mr-3"
+        >
           Followers <strong>{followersCount}</strong>
         </Link>
-        <Link to={`/user/${targetUserID}/following`} className="btn btn-sm ml-3">
+        <Link
+          to={`/user/${targetUserID}/following`}
+          className="btn btn-sm ml-3"
+        >
           Following <strong>{followingCount}</strong>
         </Link>
       </div>
       <div className="card-text m-3">
         {targetUserID !== currentUserID && (
-          <button className="btn btn-sm btn-outline-primary" onClick={handleFollowToggle}>
+          <button
+            className="btn btn-sm btn-outline-primary"
+            onClick={handleFollowToggle}
+          >
             {following ? "Unfollow" : "Follow"}
           </button>
         )}

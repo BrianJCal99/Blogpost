@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Card from "./Card.jsx";
-import supabase from "./utils/supabase.js";
+import supabase from "../utils/supabase.js";
 
 
 function CardComponent({ id, title, abstract, user, created_at, created_by, image_url, likes, liked_by }) {

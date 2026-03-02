@@ -1,12 +1,13 @@
-import React, { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import supabase from "./utils/supabase";
-import { SessionContext } from "./context/userSession.context";
+import { useSelector } from 'react-redux';
+import toast from "react-hot-toast";
+
+import supabase from "../utils/supabase";
 
 function NewPost() {
-    const session = useContext(SessionContext);
     const navigate = useNavigate();
-
+    const { user } = useSelector((state) => state.user) // Redux state
     const [post, setPost] = useState({
         title: '',
         abstract: '',
@@ -38,10 +39,11 @@ function NewPost() {
             // Upload the image to Supabase
             const { data, error: uploadError } = await supabase.storage
                 .from('post_image')
-                .upload(`${session?.user?.id}/${Date.now()}-${image.name}`, image);
+                .upload(`${user?.id}/${Date.now()}-${image.name}`, image);
     
             if (uploadError) {
-                alert(`Image upload failed: ${uploadError.message}`);
+                toast.error(`Image upload failed: ${uploadError.message}`);
+                // console.error('Image upload failed:', uploadError);
                 return;
             }
     
@@ -62,7 +64,7 @@ function NewPost() {
                     abstract,
                     text,
                     image_url: imageUrl,
-                    created_by: session?.user?.id, // Reference to the logged-in user
+                    created_by: user?.id, // Reference to the logged-in user
                 })
                 .select()
                 .single();
@@ -96,11 +98,11 @@ function NewPost() {
                 if (postTagError) throw postTagError;
             }
     
-            alert("You have successfully posted your new post!");
+            toast.success("You have successfully posted your new post!");
             navigate("/myposts");
         } catch (error) {
-            console.error("Error creating post:", error.message);
-            alert(error.message);
+            toast.error(`Error creating post: ${error.message}`);
+            // console.error("Error creating post:", error.message);
         }
     };
     

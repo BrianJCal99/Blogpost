@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import supabase from "./utils/supabase";
+import supabase from "../utils/supabase";
 
 const TagSection = ({ postId }) => {
     const [tags, setTags] = useState([]);

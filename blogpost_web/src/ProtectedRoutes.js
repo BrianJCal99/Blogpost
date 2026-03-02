@@ -1,46 +1,19 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { SessionContext } from "./context/userSession.context";
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ProtectedRoute = ({ children }) => {
-  const session = useContext(SessionContext);
-  const [loading, setLoading] = useState(true);
+  const { user, status } = useSelector((state) => state.user);
+  const location = useLocation();
 
-  useEffect(() => {
-    // Simulate loading or perform any necessary checks for session validation
-    if (session !== undefined) {
-      setLoading(false);
-    }
-  }, [session]);
-
-  if (loading) {
-    // Show a loading message or spinner while the session is being checked
-    return (
-      <div className="container text-center my-3">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="mt-3">Checking session...</p>
-      </div>
-    );
+  if (status === "loading" || status === "idle") {
+    return <div className="text-center mt-5">Loading...</div>;
   }
 
-  if (!session) {
-    // Show sign-in message if there is no session
-    return (
-      <div className="container text-center my-3">
-        <div className="alert alert-primary m-3" role="alert">
-          Please{" "}
-          <Link to="/signin" className="btn btn-primary m-3">
-            Sign in
-          </Link>
-          to continue.
-        </div>
-      </div>
-    );
+  if (!user) {
+    return <Navigate to="/signin" state={{ from: location }} replace />;
   }
 
-  // If the session exists, render the protected content
   return children;
 };
 

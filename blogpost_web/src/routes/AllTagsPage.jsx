@@ -1,5 +1,5 @@
 import React from "react";
-import TagList from "../TagList";
+import TagList from "../components/TagList";
 
 const AllTagsPage = () => {
     return (

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import supabase from '../utils/supabase';
-import CardLarge from '../CardLarge';
-import CommentSection from '../CommentSection';
-import TagSection from '../TagSection';
-import LikeSection from '../LikeSection';
+import CardLarge from '../components/CardLarge';
+import CommentSection from '../components/CommentSection';
+import TagSection from '../components/TagSection';
+import LikeSection from '../components/LikeSection';
 
 function CardComponent({article}) {
     const timestamp = article.created_at;

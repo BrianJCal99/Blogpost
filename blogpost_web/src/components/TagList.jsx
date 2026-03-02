@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import supabase from "./utils/supabase";
+import supabase from "../utils/supabase";
 
 const TagList = ({limit}) => {
     const [tagsList, setTagsList] = useState([]);
@@ -42,7 +42,7 @@ const TagList = ({limit}) => {
                         <Link 
                             key={tag.id} 
                             className="btn btn-light m-4" 
-                            to={`/user/${tag.id}`}>
+                            to={`/tag/${tag.id}`}>
                             #{tag.name}
                         </Link>
                     ))}
