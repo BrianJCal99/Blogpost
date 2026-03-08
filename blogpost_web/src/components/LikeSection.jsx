@@ -118,10 +118,10 @@ const LikeSection = ({ postId }) => {
         <div className="d-flex flex-column align-items-start">
             <div className="d-flex align-items-center">
                 <button
-                    className={`btn btn-sm ${userLiked ? "btn-primary" : "btn-outline-primary"}`}
+                    className="btn btn-lg border-0 text-primary"
                     onClick={handleLike}
                 >
-                    {userLiked ? "Liked" : "Like"}
+                    {userLiked ? <i className="bi bi-hand-thumbs-up-fill"></i> : <i className="bi bi-hand-thumbs-up"></i>}
                 </button>
                 <span
                     className="ml-2 text-primary"

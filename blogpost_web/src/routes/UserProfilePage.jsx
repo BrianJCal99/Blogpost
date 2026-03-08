@@ -95,8 +95,9 @@ const UserProfilePage = () => {
     <div className="container">
       {user ? (
         <div className="card text-center">
-          <div className="card-header bg-white">
-            {user?.user_metadata?.userName}
+          <div className="card-header bg-white text-center position-relative">
+            <span>{user?.user_metadata?.userName}</span>
+            <button className="btn p-0 border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-3"><i className="bi bi-sliders"></i></button>
           </div>
           <div className="card-body bg-white">
             <h5 className="card-title">
