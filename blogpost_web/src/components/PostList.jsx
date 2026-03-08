@@ -2,82 +2,82 @@ import React, { useEffect, useState } from "react";
 import Card from "./Card.jsx";
 import supabase from "../utils/supabase.js";
 
-
-function CardComponent({ id, title, abstract, user, created_at, created_by, image_url, likes, liked_by }) {
-  const date = new Date(created_at).toISOString().split('T')[0];
+function CardComponent({ post }) {
+  const date = new Date(post.created_at).toISOString().split("T")[0];
 
   return (
-      <Card
-          post_id={id}
-          title={title}
-          abstract={abstract}
-          post_user={user?.unique_user_name}
-          date={date}
-          post_user_id={created_by}
-          image_url={image_url}
-      />
+    <Card
+      post_id={post.id}
+      title={post.title}
+      abstract={post.abstract}
+      post_user={post.user?.unique_user_name}
+      date={date}
+      post_user_id={post.created_by}
+      image_url={post.image_url}
+    />
   );
 }
 
-const PostList = ({limit}) => {
-    const [articleList, setArticleList] = useState([]);
-    const [loading, setLoading] = useState(true); // State for loading
+const PostList = ({ limit }) => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-          const { data, error } = await supabase
-            .from('post')
-            .select(`
-              id, 
-              created_by, 
-              created_at, 
-              title, 
-              abstract, 
-              text, 
-              image_url,
-              user: created_by (
-                first_name,
-                last_name,
-                user_name,
-                unique_user_name,
-                email
-                )
-            `);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
 
-    
-          if (error) {
-            console.error(error.message);
-          } else {
-            // console.log(data);
-            setArticleList(data);
-          }
-          setLoading(false);
-        };
-    
-        fetchData();
-      }, []);
+      let query = supabase
+        .from("post")
+        .select(`
+          id,
+          created_by,
+          created_at,
+          title,
+          abstract,
+          image_url,
+          user:created_by (
+            unique_user_name
+          )
+        `)
+        .order("created_at", { ascending: false });
 
-    if (loading) {
-      return <div className="container mt-5 text-center">Loading posts...</div>;
-    }
+      if (limit) query = query.limit(limit);
 
-    if (!articleList || articleList.length === 0) {
+      const { data, error } = await query;
+
+      if (error) {
+        console.error(error.message);
+        setError(error.message);
+      } else {
+        setPosts(data);
+      }
+
+      setLoading(false);
+    };
+
+    fetchPosts();
+  }, [limit]);
+
+  if (loading) {
+    return <div className="container mt-5 text-center">Loading posts...</div>;
+  }
+
+  if (error) {
+    return <div className="container mt-5 text-center">Error loading posts</div>;
+  }
+
+  if (posts.length === 0) {
     return <div className="container mt-5 text-center">No posts available...</div>;
-    }
-    
-    // If a limit is passed, slice the articleList
-    const displayedArticles = limit ? articleList.slice(0, limit) : articleList;
+  }
 
-    
-    
-    return(
-        <div className="row">
-            {displayedArticles.map((article) => (
-                <CardComponent key={article.id} {...article} />
-            ))}
-            
-        </div>
-    )
-}
+  return (
+    <div className="row">
+      {posts.map((post) => (
+        <CardComponent key={post.id} post={post} />
+      ))}
+    </div>
+  );
+};
 
 export default PostList;

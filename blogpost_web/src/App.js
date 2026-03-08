@@ -1,5 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import HomePage from './routes/HomePage';
 import NewPostPage from './routes/NewPostPage';
 import SigninPage from './routes/SigninPage';
