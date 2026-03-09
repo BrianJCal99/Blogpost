@@ -1,62 +1,49 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import PostSettingsDropdown from "./PostSettingsDropdown";
 
-const Card = (props) => {
+const Card = (post) => {
   const navigate = useNavigate();
 
   const handleViewPostClick = () => {
-    navigate(`/post/${props.post_id}`); // Navigate to the details page with the item's ID
+    navigate(`/post/${post.post_id}`); // Navigate to the details page with the item's ID
   };
 
   const handleUsernameClick = (e) => {
     e.stopPropagation();
-    navigate(`/user/${props.post_user_id}`); // Navigate to the details page with the item's ID
+    navigate(`/user/${post.post_user_id}`); // Navigate to the details page with the item's ID
   };
 
   return (
     <div className="col-lg-4 d-flex justify-content-center my-3">
-      <div
-        className="card"
-        style={{ width: "24rem", cursor: "pointer" }}
-        onClick={handleViewPostClick}
-      >
+      <div className="card" style={{ width: "24rem" }}>
         {/* Display the image if image_url is provided */}
-        {props.image_url ? (
+        {post.image_url ? (
           <img
-            src={props.image_url}
+            src={post.image_url}
             className="card-img-top"
-            alt={props.title}
-            style={{ height: "200px", objectFit: "cover" }}
+            alt={post.title}
+            style={{ height: "200px", objectFit: "cover", cursor: "pointer" }}
+            onClick={handleViewPostClick}
           />
         ) : (
           <img
             src="/BLOGPOST_card_image_bootstrap_primary.png"
             className="card-img-top"
-            alt={props.title}
-            style={{ height: "200px", objectFit: "cover" }}
+            alt={post.title}
+            style={{ height: "200px", objectFit: "cover", cursor: "pointer" }}
+            onClick={handleViewPostClick}
           />
         )}
         <div className="card-body">
-          <h5 className="card-title">{props.title}</h5>
-          <h6 className="card-subtitle mb-2 text-muted">{props.abstract}</h6>
-          <button
-            type="button"
-            className="btn btn-light btn-sm"
+          <h5 className="card-title">{post.title}</h5>
+          <h6 className="card-subtitle mb-2 text-muted">{post.abstract}</h6>
+          <div
             onClick={handleUsernameClick}
+            className="card-text small text-muted"
+            style={{ cursor: "pointer" }}
           >
-            @{props.post_user}
-          </button>
-          <p className="small text-muted">{props.date}</p>
-        </div>
-        <div
-          className="card-footer bg-white d-flex justify-content-end"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <PostSettingsDropdown
-            post_id={props.post_id}
-            post_user_id={props.post_user_id}
-          />
+            @{post.post_user}
+          </div>
+          <p className="card-text small text-muted">{post.date}</p>
         </div>
       </div>
     </div>
