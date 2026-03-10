@@ -51,17 +51,10 @@ const Navbar = () => {
               </Link>
             </li>
             <li
-              className={`nav-item ${location.pathname === "/allposts" ? "active" : ""}`}
+              className={`nav-item ${location.pathname === "/feed" ? "active" : ""}`}
             >
-              <Link to="/posts" className="nav-link mx-3 m-3">
-                Posts
-              </Link>
-            </li>
-            <li
-              className={`nav-item ${location.pathname === "/alltags" ? "active" : ""}`}
-            >
-              <Link to="/tags" className="nav-link mx-3 m-3">
-                #tags
+              <Link to="feed" className="nav-link mx-3 m-3">
+                Feed
               </Link>
             </li>
             <li
@@ -87,11 +80,11 @@ const Navbar = () => {
                   <Link to="/myprofile" className="dropdown-item">
                     My Profile
                   </Link>
-                  <Link to="/myposts" className="dropdown-item">
-                    My Posts
-                  </Link>
                   <Link to="/newpost" className="dropdown-item">
                     New Post
+                  </Link>
+                  <Link to="/settings" className="dropdown-item">
+                    Settings
                   </Link>
                   <div className="dropdown-divider"></div>
                   <button className="dropdown-item" onClick={handleSignOut}>

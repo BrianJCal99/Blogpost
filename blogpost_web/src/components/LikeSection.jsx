@@ -66,7 +66,7 @@ const LikeSection = ({ postId }) => {
                 if (error) throw error;
 
                 toast("You unliked this post", {
-                    icon: "👎",
+                    icon: <i class="bi bi-hand-thumbs-down"></i>,
                 })
                 setLikesCount((prev) => prev - 1);
                 setUserLiked(false);
@@ -79,7 +79,7 @@ const LikeSection = ({ postId }) => {
                 if (error) throw error;
 
                 toast("You liked this post", {
-                    icon: "👍",
+                    icon: <i class="bi bi-hand-thumbs-up"></i>,
                 })
                 setLikesCount((prev) => prev + 1);
                 setUserLiked(true);
