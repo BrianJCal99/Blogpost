@@ -80,14 +80,14 @@ const CardLarge = (props) => {
         <h5 className="card-title">{props.title}</h5>
         <h6 className="card-subtitle mb-2 text-muted">{props.abstract}</h6>
         <p className="card-text">{props.text}</p>
-        <button
-          type="button"
-          className="btn btn-light"
-          onClick={handleUsernameClick}
-        >
-          @{props.post_unique_user_name}
-        </button>
-        <p className="card-text small text-muted">{props.date}</p>
+        <div
+            onClick={handleUsernameClick}
+            className="card-text text-muted"
+            style={{ cursor: "pointer" }}
+          >
+            @{props.post_unique_user_name}
+          </div>
+        <p className="card-text text-muted">{props.date}</p>
       </div>
       <div className="card-footer bg-white d-flex justify-content-end">
         <PostSettingsDropdown

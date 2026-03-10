@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import supabase from "../utils/supabase";
 import toast from "react-hot-toast";
@@ -94,7 +94,9 @@ const FollowSection = ({ targetUserID, currentUserID }) => {
 
         if (error) throw error;
         setFollowing(false);
-        toast.error("You started unfollowing them.");
+        toast("You unfollowed them", {
+                    icon: <i className="bi bi-person-dash"></i>,
+                });
         setFollowersCount(followersCount - 1); // Update follower count
       } else {
         // Follow user by inserting a new relationship
@@ -104,7 +106,9 @@ const FollowSection = ({ targetUserID, currentUserID }) => {
 
         if (error) throw error;
         setFollowing(true);
-        toast.success("You started following them.");
+        toast("You followed them", {
+                    icon: <i className="bi bi-person-check"></i>,
+                });
         setFollowersCount(followersCount + 1); // Update follower count
       }
     } catch (error) {

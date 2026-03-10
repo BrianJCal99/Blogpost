@@ -91,7 +91,16 @@ const DetailedUserViewPage = () => {
   }
 
   if (!targetUser) {
-    return <div className="container mt-5 text-center">User not found.</div>;
+    return (
+      <div
+        className="container d-flex flex-column align-items-center justify-content-center text-center"
+        style={{ minHeight: "70vh" }}
+      >
+        <img src="/user_not_found.png" alt="User Not Found" className="img-fluid mb-4" style={{ maxWidth: "300px" }} />
+        <h2>User Not Found</h2>
+        <p className="text-muted">Sorry, we couldn't find the user you're looking for.</p>
+      </div>
+    );
   }
 
   return (
