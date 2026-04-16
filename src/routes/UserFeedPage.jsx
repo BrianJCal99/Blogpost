@@ -37,7 +37,10 @@ const UserFeedPage = () => {
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    if (!user?.id) return; // stop if user not ready
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
 
     const fetchFollowedPosts = async () => {
       try {
@@ -90,21 +93,24 @@ const UserFeedPage = () => {
     fetchFollowedPosts();
   }, [user?.id]);
 
-  if (loading) {
-    return (
-      <div className="container mt-5 text-center">Loading your feed...</div>
-    );
-  }
-
   if (!user) {
     return (
       <div className="container text-center my-5">
         <h4>Your feed is empty!</h4>
-        <p>Join us and start following other users to see their posts here.</p>
+        <p>Sign in or create an account to follow users and see their posts here.</p>
         <Link to="/signin" className="btn btn-primary m-2">
-          Join BLOGPOST
+          Sign In
+        </Link>
+        <Link to="/signup" className="btn btn-outline-primary m-2">
+          Create Account
         </Link>
       </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="container mt-5 text-center">Loading your feed...</div>
     );
   }
 
