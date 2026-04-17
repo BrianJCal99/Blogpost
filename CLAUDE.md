@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-All frontend commands run from `blogpost_web/`:
+Run from the repo root:
 
 ```bash
 npm start          # Dev server at http://localhost:3000
@@ -13,15 +13,9 @@ npm test           # Run tests in watch mode
 npm test -- --testPathPattern=<file>  # Run a single test file
 ```
 
-SendGrid microservice (`blogpost_api/sendgrid/`):
-
-```bash
-npm start          # Express server on PORT (default 3001)
-```
-
 ## Environment
 
-Create `blogpost_web/.env.local`:
+Create `.env.local` in the repo root:
 
 ```
 REACT_APP_SUPABASE_URL=your_supabase_project_url
@@ -38,11 +32,9 @@ REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 **State management**: Redux Toolkit is used only for authentication state. All other UI state (forms, modals, fetched data) lives in local component state.
 
-**SendGrid microservice**: A standalone Express server in `blogpost_api/sendgrid/server.js` handles newsletter email sending. It is separate from the main app and not imported by the frontend — it must be running independently when newsletter features are used.
-
 ## Database
 
-Schema lives in `blogpost_api/supabase/migrations/20241212121251_initial_migration.sql`.
+Schema is deployed to Supabase cloud (project ref: `cawbvzlbpvgsrcjsnxcw`).
 
 Core tables: `user`, `post`, `tag`, `post_tag`, `comment`, `like`, `follow`, `save`.
 

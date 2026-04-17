@@ -1,70 +1,10 @@
-import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import Button from "./Button";
-import Input from "./Input";
 
 const Footer = () => {
-  const [contact, setContact] = useState({
-    email: "",
-  });
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setContact((preValue) => {
-      return {
-        ...preValue,
-        [name]: value,
-      };
-    });
-  };
-
-  const handleClick = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: contact.email,
-        }),
-      });
-
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.log("Error: " + error);
-    }
-  };
-
   return (
     <div>
       <footer className="bg-dark text-center text-white mt-5">
         <div className="container p-4">
-          <section className="">
-            <div className="col-auto">
-              <p className="pt-2 text-uppercase">
-                <strong>Sign up for our daily insider</strong>
-              </p>
-            </div>
-            <div className="row d-flex justify-content-center">
-              <div className="col-md-5 col-12">
-                <div className="form-outline form-white mb-4">
-                  {/*<input type="email" id="email" className="form-control" placeholder="Enter your email"/>*/}
-                  <Input
-                    name="email"
-                    type="text"
-                    placeholder="Enter your email"
-                    onChange={handleChange}
-                    value={contact.email}
-                  />
-                </div>
-              </div>
-
-              <div className="col-auto">
-                {/*<button type="submit" className="btn btn-outline-light mb-4">Subscribe</button>*/}
-                <Button type="submit" text="Subscribe" onClick={handleClick} />
-              </div>
-            </div>
-          </section>
           <section className="">
             <div className="row">
               <div className="col-lg-4 col-md-6 mb-4 mb-md-0">
