@@ -1,4 +1,4 @@
-# Blogpost
+# Blogpost Web Application
 
 A full-stack blogging platform built with React, Bootstrap 5, and Supabase. Users can create posts, follow other writers, interact via comments and likes, and browse content by tags.
 
@@ -31,8 +31,8 @@ A full-stack blogging platform built with React, Bootstrap 5, and Supabase. User
 ### Installation
 
 ```bash
-git clone https://github.com/BrianJCal99/blogpost.git
-cd blogpost
+git clone https://github.com/BrianJCal99/blogpost-web-application.git
+cd blogpost-web-application
 npm install
 ```
 
