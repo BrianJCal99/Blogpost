@@ -32,13 +32,13 @@ A full-stack blogging platform built with React, Bootstrap 5, and Supabase. User
 
 ```bash
 git clone https://github.com/BrianJCal99/blogpost.git
-cd blogpost
+cd blogpost/blogpost_web
 npm install
 ```
 
 ### Environment Variables
 
-Create a `.env.local` file in the project root:
+Create `blogpost_web/.env.local`:
 
 ```env
 REACT_APP_SUPABASE_URL=your_supabase_project_url
@@ -47,16 +47,29 @@ REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ### Running Locally
 
+From `blogpost_web/`:
+
 ```bash
 npm start        # Dev server at http://localhost:3000
 npm run build    # Production build
 npm test         # Run tests in watch mode
 ```
 
+#### SendGrid microservice (newsletter emails)
+
+From `blogpost_api/sendgrid/`:
+
+```bash
+npm install
+npm start        # Express server on PORT (default 3001)
+```
+
+Create `blogpost_api/sendgrid/.env` with your SendGrid API key. This service must be running independently for newsletter features to work.
+
 ## Project Structure
 
 ```
-src/
+blogpost_web/src/
 ├── App.js                  # Route definitions
 ├── index.js                # App entry point (Redux, Router, Toaster)
 ├── ProtectedRoutes.js      # Auth guard component
