@@ -37,7 +37,7 @@ const DetailedUserViewPage = () => {
         // Fetch user details
         const { data: userData, error: userError } = await supabase
           .from("user")
-          .select("*")
+          .select("id, user_name, unique_user_name, first_name, last_name, created_at")
           .eq("id", targetUserID)
           .single();
 
@@ -63,8 +63,7 @@ const DetailedUserViewPage = () => {
               first_name,
               last_name,
               user_name,
-              unique_user_name,
-              email
+              unique_user_name
             )
           `)
           .eq("created_by", targetUserID);
@@ -110,7 +109,6 @@ const DetailedUserViewPage = () => {
         <div className="card-body bg-white">
           <h5 className="card-title">@{targetUser.unique_user_name}</h5>
           <h6 className="card-subtitle">{targetUser.first_name + " " + targetUser.last_name || "N/A"}</h6>
-          <h6 className="card-subtitle">{targetUser.email}</h6>
         </div>
         <FollowSection targetUserID={targetUserID} currentUserID={currentUserID} />
         <div className="card-footer bg-white small text-muted">

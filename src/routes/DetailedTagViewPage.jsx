@@ -64,8 +64,7 @@ const DetailedTagViewPage = () => {
                           first_name,
                           last_name,
                           user_name,
-                          unique_user_name,
-                          email
+                          unique_user_name
                         )
                     `)
                     .in("id", postIds);

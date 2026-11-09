@@ -40,7 +40,7 @@ const SearchPage = () => {
       // Query users
       const { data: userResults, error: userError } = await supabase
         .from('user') // Replace with your users table name
-        .select('*')
+        .select('id, user_name, unique_user_name')
         .or(`user_name.ilike.%${searchQuery}%,unique_user_name.ilike.%${searchQuery}%`);
 
       if (userError) throw userError;

@@ -31,8 +31,7 @@ const CardLarge = (props) => {
                             first_name,
                             last_name,
                             user_name,
-                            unique_user_name,
-                            email
+                            unique_user_name
                         )`,
           )
           .eq("id", postId)
