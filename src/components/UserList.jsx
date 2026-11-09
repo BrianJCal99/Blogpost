@@ -11,7 +11,7 @@ const UserList = ({limit}) => {
       try {
         const { data, error } = await supabase
           .from('user')
-          .select('id, first_name, last_name, unique_user_name, email'); // Fetch users data
+          .select('id, first_name, last_name, unique_user_name'); // Fetch users data
 
         if (error) throw error;
         setUsers(data);

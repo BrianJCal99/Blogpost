@@ -60,8 +60,7 @@ const UserProfilePage = () => {
               first_name,
               last_name,
               user_name,
-              unique_user_name,
-              email
+              unique_user_name
             )
           `,
           )
@@ -99,8 +98,7 @@ const UserProfilePage = () => {
                 first_name,
                 last_name,
                 user_name,
-                unique_user_name,
-                email
+                unique_user_name
               )
             )
           `,
@@ -139,8 +137,7 @@ const UserProfilePage = () => {
                 first_name,
                 last_name,
                 user_name,
-                unique_user_name,
-                email
+                unique_user_name
               )
             )
           `,
@@ -198,7 +195,7 @@ const UserProfilePage = () => {
                   user?.user_metadata?.lastName || "User Name"}
               </h6>
               <h6 className="card-subtitle">
-                {user?.user_metadata?.email || "User Email"}
+                {user?.email || user?.user_metadata?.email || "User Email"}
               </h6>
             </div>
             <FollowSection targetUserID={user?.id} currentUserID={user?.id} />
