@@ -31,13 +31,17 @@ function CardComponent({
 }
 
 const UserFeedPage = () => {
-  const { user } = useSelector((state) => state.user); // Redux state
+  const { user, status } = useSelector((state) => state.user); // Redux state
+  const authPending = status === "idle" || status === "loading"; // Session check not finished yet
   const [followedArticleList, setFollowedArticleList] = useState([]); // Posts from followed users
   const [followedUsers, setFollowedUsers] = useState([]); // Track followed users
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    if (!user?.id) return; // stop if user not ready
+    if (!user?.id) {
+      setLoading(false); // nothing to fetch when signed out
+      return;
+    }
 
     const fetchFollowedPosts = async () => {
       try {
@@ -89,7 +93,7 @@ const UserFeedPage = () => {
     fetchFollowedPosts();
   }, [user?.id]);
 
-  if (loading) {
+  if (authPending || loading) {
     return (
       <div className="container mt-5 text-center">Loading your feed...</div>
     );
@@ -109,6 +113,7 @@ const UserFeedPage = () => {
 
   return (
     <div className="container">
+      <h2 className="text-center my-3">Your Feed</h2>
       <div className="row mt-4">
         {followedArticleList.length === 0 ? (
           followedUsers.length === 0 ? ( // Check if the user is following anyone
