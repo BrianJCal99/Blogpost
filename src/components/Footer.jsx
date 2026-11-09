@@ -127,6 +127,9 @@ const Footer = () => {
             </div>
           </section>
         </div>
+        <div className="text-center p-3 border-top border-secondary small">
+          &copy; {new Date().getFullYear()} BLOGPOST. All rights reserved.
+        </div>
       </footer>
       <Outlet />
     </div>
