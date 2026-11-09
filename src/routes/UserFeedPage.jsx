@@ -109,6 +109,7 @@ const UserFeedPage = () => {
 
   return (
     <div className="container">
+      <h2 className="text-center my-3">Your Feed</h2>
       <div className="row mt-4">
         {followedArticleList.length === 0 ? (
           followedUsers.length === 0 ? ( // Check if the user is following anyone
