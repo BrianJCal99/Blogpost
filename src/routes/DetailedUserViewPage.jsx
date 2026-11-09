@@ -108,7 +108,7 @@ const DetailedUserViewPage = () => {
         <div className="card-header bg-white">{targetUser.user_name}</div>
         <div className="card-body bg-white">
           <h5 className="card-title">@{targetUser.unique_user_name}</h5>
-          <h6 className="card-subtitle">{targetUser.first_name + " " + targetUser.last_name || "N/A"}</h6>
+          <h6 className="card-subtitle">{[targetUser.first_name, targetUser.last_name].filter(Boolean).join(" ") || "N/A"}</h6>
         </div>
         <FollowSection targetUserID={targetUserID} currentUserID={currentUserID} />
         <div className="card-footer bg-white small text-muted">

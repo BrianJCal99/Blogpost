@@ -190,9 +190,9 @@ const UserProfilePage = () => {
                 @{user?.user_metadata?.uniqueUserName}
               </h5>
               <h6 className="card-subtitle">
-                {user?.user_metadata?.firstName +
-                  " " +
-                  user?.user_metadata?.lastName || "User Name"}
+                {[user?.user_metadata?.firstName, user?.user_metadata?.lastName]
+                  .filter(Boolean)
+                  .join(" ") || "User Name"}
               </h6>
               <h6 className="card-subtitle">
                 {user?.email || user?.user_metadata?.email || "User Email"}
