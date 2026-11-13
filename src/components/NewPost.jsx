@@ -5,6 +5,33 @@ import toast from "react-hot-toast";
 
 import supabase from "../utils/supabase";
 
+// Find a tag by name, creating it if it doesn't exist yet.
+// Uses select-then-insert instead of upsert, because upsert needs UPDATE
+// permission on the tag table and members shouldn't be able to rename tags.
+async function getOrCreateTagId(name) {
+    const findTag = () => supabase.from('tag').select('id').eq('name', name).maybeSingle();
+
+    const { data: existing, error: findError } = await findTag();
+    if (findError) throw findError;
+    if (existing) return existing.id;
+
+    const { data: created, error: insertError } = await supabase
+        .from('tag')
+        .insert({ name })
+        .select('id')
+        .single();
+
+    if (!insertError) return created.id;
+
+    // Someone else created the same tag a moment ago: use theirs
+    if (insertError.code === '23505') {
+        const { data: raced, error: retryError } = await findTag();
+        if (retryError) throw retryError;
+        if (raced) return raced.id;
+    }
+    throw insertError;
+}
+
 function NewPost() {
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.user) // Redux state
@@ -74,21 +101,17 @@ function NewPost() {
             const postId = postData.id;
     
             // Process tags and insert into post_tag table
-            const processedTags = tags.split(/[#,\s]+/)
-                .map(tag => tag.trim())
-                .filter(tag => tag.length > 0); // Remove empty strings
-    
+            // Tags are single lowercase words: anything that isn't a letter or digit
+            // (spaces, #, commas, hyphens...) separates tags, so "#budget-travel"
+            // becomes "budget" and "travel". Then drop repeats.
+            const processedTags = [...new Set(
+                tags.toLowerCase()
+                    .split(/[^\p{L}\p{N}]+/u)
+                    .filter(tag => tag.length > 0) // Remove empty strings
+            )];
+
             for (const tagName of processedTags) {
-                // Use upsert to avoid inserting duplicate tags
-                const { data: tagData, error: tagError } = await supabase
-                    .from('tag')
-                    .upsert({ name: tagName }, { onConflict: 'name' })
-                    .select('id')
-                    .single();
-    
-                if (tagError) throw tagError;
-    
-                const tagId = tagData.id;
+                const tagId = await getOrCreateTagId(tagName);
     
                 // Associate the tag with the post in the post_tag table
                 const { error: postTagError } = await supabase
