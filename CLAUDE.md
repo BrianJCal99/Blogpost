@@ -49,5 +49,3 @@ The Supabase MCP server is configured in `.mcp.json` — use it to inspect the l
 **Migrations**: `supabase/migrations` holds the full schema, and each file's version prefix matches the live project's migration history (check with `supabase migration list`). Create new ones with `supabase migration new <name>` so the version is a full timestamp; don't use date-only prefixes like `20261109_`, which collide.
 
 **Local stack**: `supabase start` (needs Docker) builds the schema from the migrations and loads `supabase/seed.sql`. Serve the function with `supabase functions serve suggest-post-meta --env-file supabase/functions/.env`.
-
-**`build/` is tracked in git**: `npm run build` modifies tracked files. Restore them (`git restore build/ && git clean -fd build/`) rather than committing build output.

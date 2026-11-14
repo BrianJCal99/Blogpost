@@ -7,3 +7,6 @@ node_modules
 # Edge Function secrets (local only)
 supabase/functions/.env
 supabase/.temp/
+
+# Production build output (Vercel builds on deploy)
+/build
