@@ -45,15 +45,16 @@ function parseTags(tagString) {
 
 // Turn a failed functions.invoke() call into a friendly message
 async function suggestionErrorMessage(error) {
-    const status = error?.context?.status;
-    if (status === 429 || status === 503) return "AI is busy, try again in a minute";
+    // The Edge Function returns { error: "..." } with a user-friendly message,
+    // e.g. "AI is busy..." or the daily-limit notice
     try {
-        // The Edge Function returns { error: "..." } with a user-friendly message
         const body = await error.context.json();
         if (typeof body?.error === 'string') return body.error;
     } catch {
         // Not JSON (network failure, gateway error...): fall through
     }
+    const status = error?.context?.status;
+    if (status === 429 || status === 503) return "AI is busy, try again in a minute";
     return "Couldn't get suggestions right now";
 }
 

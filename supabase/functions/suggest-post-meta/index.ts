@@ -15,6 +15,7 @@ const MAX_ABSTRACT_LENGTH = 250;
 const MAX_TAGS = 5;
 const MAX_EXISTING_TAGS = 200;
 const GEMINI_TIMEOUT_MS = 20_000;
+const DAILY_LIMIT = 20; // suggestion requests per user per UTC day
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -106,6 +107,17 @@ Deno.serve(async (req) => {
     return json({ error: "Write a bit more first" }, 400);
   }
   const text = fullText.slice(0, MAX_TEXT_LENGTH);
+
+  // --- Daily limit: count this request (after validation, so rejected input is free) ---
+  const { data: usedToday, error: usageError } = await supabase.rpc("bump_ai_suggestion_usage");
+  if (usageError || typeof usedToday !== "number") {
+    // Fail closed: without the counter we can't protect the Gemini quota
+    console.error("suggest-post-meta: usage counter failed", usageError?.message);
+    return json({ error: "Couldn't get suggestions right now" }, 500);
+  }
+  if (usedToday > DAILY_LIMIT) {
+    return json({ error: `You've used all ${DAILY_LIMIT} AI suggestions for today. Try again tomorrow.` }, 429);
+  }
 
   // --- Existing tags, so the model can reuse them instead of inventing near-duplicates ---
   const { data: tagRows, error: tagError } = await supabase
