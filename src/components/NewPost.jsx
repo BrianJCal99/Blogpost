@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import toast from "react-hot-toast";
@@ -32,6 +32,31 @@ async function getOrCreateTagId(name) {
     throw insertError;
 }
 
+// Minimum post length before AI suggestions are allowed (matches the Edge Function)
+const MIN_TEXT_FOR_SUGGESTIONS = 100;
+
+// Split a tags string like "#Food #easy-meals" into lowercase single words,
+// using the same rule as publishing (and the tag table's check constraint).
+function parseTags(tagString) {
+    return tagString.toLowerCase()
+        .split(/[^\p{L}\p{N}]+/u)
+        .filter(tag => tag.length > 0);
+}
+
+// Turn a failed functions.invoke() call into a friendly message
+async function suggestionErrorMessage(error) {
+    const status = error?.context?.status;
+    if (status === 429 || status === 503) return "AI is busy, try again in a minute";
+    try {
+        // The Edge Function returns { error: "..." } with a user-friendly message
+        const body = await error.context.json();
+        if (typeof body?.error === 'string') return body.error;
+    } catch {
+        // Not JSON (network failure, gateway error...): fall through
+    }
+    return "Couldn't get suggestions right now";
+}
+
 function NewPost() {
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.user) // Redux state
@@ -43,7 +68,54 @@ function NewPost() {
     });
 
     const [image, setImage] = useState(null); // For the selected image file
+    const [suggesting, setSuggesting] = useState(false); // AI suggestion request in flight
     const { title, abstract, text, tags } = post;
+
+    // Always holds the latest form values, for use after an await
+    const postRef = useRef(post);
+    postRef.current = post;
+
+    const charsNeededForSuggestions = MIN_TEXT_FOR_SUGGESTIONS - text.trim().length;
+
+    // Ask the suggest-post-meta Edge Function for an abstract and tags.
+    // Only fills the form: nothing is saved until the writer clicks Post.
+    const handleSuggest = async () => {
+        if (suggesting || charsNeededForSuggestions > 0) return;
+        setSuggesting(true);
+        try {
+            const { data, error } = await supabase.functions.invoke('suggest-post-meta', {
+                body: { title, text },
+            });
+            if (error) {
+                toast.error(await suggestionErrorMessage(error));
+                return;
+            }
+
+            // Read the latest form values: the writer may have kept typing while we waited
+            const current = postRef.current;
+
+            let newAbstract = current.abstract;
+            const existingAbstract = current.abstract.trim();
+            if (!existingAbstract) {
+                newAbstract = data.abstract;
+            } else if (existingAbstract !== data.abstract
+                && window.confirm(`Replace your abstract with this suggestion?\n\n"${data.abstract}"`)) {
+                newAbstract = data.abstract;
+            }
+
+            // Add suggested tags the writer hasn't already typed (in any case or format)
+            const alreadyTyped = new Set(parseTags(current.tags));
+            const newTags = data.tags.filter(tag => !alreadyTyped.has(tag)).map(tag => `#${tag}`);
+            const mergedTags = [current.tags.trim(), ...newTags].filter(Boolean).join(' ');
+
+            setPost(prev => ({ ...prev, abstract: newAbstract, tags: mergedTags }));
+            toast.success("Suggestions added. Edit them before publishing.");
+        } catch {
+            toast.error("Couldn't get suggestions right now");
+        } finally {
+            setSuggesting(false);
+        }
+    };
 
     const handleChange = (event) => {
         const { id, value } = event.target;
@@ -165,6 +237,29 @@ function NewPost() {
                         value={text}
                         onChange={handleChange}
                     ></textarea>
+                </div>
+                <div className="form-group mx-3 d-flex flex-wrap align-items-center gap-2">
+                    <button
+                        type="button"
+                        className="btn btn-outline-secondary btn-sm"
+                        onClick={handleSuggest}
+                        disabled={suggesting || charsNeededForSuggestions > 0}
+                        aria-describedby="suggest-hint"
+                    >
+                        {suggesting ? (
+                            <>
+                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                Suggesting…
+                            </>
+                        ) : (
+                            "✨ Suggest summary & tags"
+                        )}
+                    </button>
+                    <small id="suggest-hint" className="text-muted">
+                        {charsNeededForSuggestions > 0
+                            ? `Write ${charsNeededForSuggestions} more character${charsNeededForSuggestions === 1 ? '' : 's'} to get AI suggestions.`
+                            : "AI suggests an abstract and tags. You can edit them before posting."}
+                    </small>
                 </div>
                 <div className="form-group m-3">
                     <label htmlFor="tags">Tags (#): </label>
