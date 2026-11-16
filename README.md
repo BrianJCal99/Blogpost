@@ -82,6 +82,8 @@ React (NewPost.jsx) ──supabase.functions.invoke──▶ Edge Function: sugg
 - **Key stays server-side:** Create React App bundles every `REACT_APP_` variable into public JavaScript, so the Gemini key is never given to the frontend. It lives only in Supabase secrets, read by the Edge Function.
 - **Limits:** text must be at least 100 characters, each member gets 20 suggestions per day (UTC, tracked in `ai_suggestion_usage`), and errors come back as friendly messages (busy, too long, daily limit).
 
+For the full write-up (product rules, build steps, key decisions, test results and rollout), see [docs/ai-suggestions.md](docs/ai-suggestions.md).
+
 **Setup**
 
 1. Create a Gemini API key at [Google AI Studio](https://aistudio.google.com/apikey).
