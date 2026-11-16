@@ -67,8 +67,6 @@ On the new-post page, **✨ Suggest summary & tags** drafts a 1–2 sentence abs
 
 **How it works**
 
-![How AI suggestions flow: the browser calls the suggest-post-meta Edge Function, which checks the user, counts daily use, loads existing tags from Postgres and calls Gemini; the Gemini key never reaches the browser](docs/ai-suggest-flow.png)
-
 - **Structured output:** Gemini is called with a JSON schema (`{ abstract: string, tags: string[] }`), so the reply is machine-readable rather than free text. The function still validates it: non-empty abstract of at most 250 characters, at most 5 tags, each a single lowercase word.
 - **Reuses existing tags:** the function sends the names in the `tag` table and asks the model to prefer them, which avoids near-duplicates like `#Food` / `#food` / `#Foods`. The `tag` table also enforces single lowercase words with a check constraint.
 - **Key stays server-side:** Create React App bundles every `REACT_APP_` variable into public JavaScript, so the Gemini key is never given to the frontend. It lives only in Supabase secrets, read by the Edge Function.
