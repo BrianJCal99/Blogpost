@@ -67,6 +67,8 @@ On the new-post page, **✨ Suggest summary & tags** drafts a 1–2 sentence abs
 
 **How it works**
 
+![How AI suggestions flow: the browser calls the suggest-post-meta Edge Function, which checks the user, counts daily use, loads existing tags from Postgres and calls Gemini; the Gemini key never reaches the browser](docs/ai-suggest-flow.png)
+
 ```
 React (NewPost.jsx) ──supabase.functions.invoke──▶ Edge Function: suggest-post-meta ──▶ Gemini API
         ▲                 (user's session token)      · checks the user is signed in          │
