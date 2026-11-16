@@ -4,7 +4,7 @@ A full-stack social blogging platform built with **React**, **Redux Toolkit**, *
 
 **Live demo:** [my-blogpost.vercel.app](https://my-blogpost.vercel.app/) · **Case study:** [brianjcaldera.com/projects/blogpost](https://brianjcaldera.com/projects/blogpost/)
 
-![BLOGPOST web application](https://brianjcalderaportfolio.wordpress.com/wp-content/uploads/2025/05/blogpost_web.webp?w=1024)
+<img width="2560" height="1392" alt="blogpost-home-page" src="https://github.com/user-attachments/assets/947ffd34-5431-4f96-b9a5-93419d35f4b0" />
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
 ![React Router](https://img.shields.io/badge/React_Router-6-CA4245?logo=reactrouter&logoColor=white)
